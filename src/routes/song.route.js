@@ -10,7 +10,7 @@ const router = Router();
 
 router.route('/songs').post(addNewSong);
 router.route('/').get(getSongs);
-router.router('/:id').get(getSongById);
-router.router('/:id').delete(deleteSong);
+router.route('/:id').get(getSongById);
+router.route('/:id').delete(deleteSong);
 
 export default router;

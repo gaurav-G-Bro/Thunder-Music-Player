@@ -15,6 +15,6 @@ router.route('/auth/login').post(login);
 router.route('/auth/logout').post(logout);
 router.route('/update-profile').patch(udpateProfile);
 router.route('/').get(userDetails);
-router.router('/:id').get(userDetailsById);
+router.route('/:id').get(userDetailsById);
 
 export default router;

@@ -8,7 +8,12 @@ dotenv.config();
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(process.env.CORS_ORIGIN));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 export { app };

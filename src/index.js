@@ -5,7 +5,7 @@ const router = Router();
 
 CONNECT_DB()
   .then(() => {
-    router.listen(process.env.PORT, (err) => {
+    app.listen(process.env.PORT, (err) => {
       if (err) throw err;
       console.log(`server is running on port ${process.env.PORT}`);
     });
