@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
       unique: true,
     },
     email: {
@@ -14,21 +14,27 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    password_hash: {
+    password: {
       type: String,
       required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    refreshToken: {
+      type: String,
     },
   },
   { timestamps: true }
 );
-
-const User = mongoose.model('User', userSchema);
 
 userSchema.plugin(aggregatePaginate);
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
 userSchema.methods.isPasswordValid = async function (new_password) {
@@ -60,5 +66,7 @@ userSchema.methods.generateRefreshToken = async function () {
     }
   );
 };
+
+const User = mongoose.model('User', userSchema);
 
 export { User };

@@ -1,1 +1,6 @@
-export const DB_NAME = 'thunder-music';
+export const DB_NAME = 'thundermusic';
+
+export const OPTIONS = {
+  httpOnly: true,
+  secure: true,
+};
