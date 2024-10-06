@@ -65,10 +65,13 @@ const addNewSong = asyncHandler(async (req, res) => {
 const getSongs = asyncHandler(async (req, res) => {
   try {
     if (!req.user) throw new ApiError(401, 'user not logged in');
+
     const userSongs = await Song.find({
       owner: req.user._id,
     });
-    if (!userSongs) throw new ApiError(404, 'No song found');
+
+    if (!userSongs || !userSongs.length > 0)
+      throw new ApiError(404, 'No song found');
     return res
       .status(200)
       .json(new ApiResponse(200, 'songs fetched successfully', userSongs));
@@ -101,7 +104,7 @@ const deleteSong = asyncHandler(async (req, res) => {
   const songId = req.params;
   try {
     if (!req.user) throw new ApiError(401, 'user not logged in');
-    if (!songId) throw new ApiError(401, 'Invalid song Id');
+    if (!songId) throw new ApiError(404, 'Invalid song Id');
 
     const deletedSong = await Song.findOneAndDelete(
       {
