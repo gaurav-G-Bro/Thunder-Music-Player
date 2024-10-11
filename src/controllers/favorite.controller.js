@@ -6,7 +6,7 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import mongoose from 'mongoose';
 
 const getAllFavoriteSongs = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user?._id;
   try {
     if (!userId) throw new ApiError(400, 'user not logged in');
 
@@ -16,7 +16,7 @@ const getAllFavoriteSongs = asyncHandler(async (req, res) => {
 
     if (!favSongs) throw new ApiError(404, 'No song found');
     const favSongStatus =
-      !favSongs.length < 0
+      favSongs.length !== 0
         ? 'favorite songs fetched successfully'
         : 'No songs available';
     return res.status(200).json(new ApiResponse(200, favSongStatus, favSongs));
@@ -26,17 +26,19 @@ const getAllFavoriteSongs = asyncHandler(async (req, res) => {
 });
 
 const addSongToFavorite = asyncHandler(async (req, res) => {
-  const song_id = req.params;
+  const song_id = req.params?.songId;
   try {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     if (!userId) throw new ApiError(400, 'user not logged in');
 
     const existSongInFav = await Favorite.findOne({
       user_id: userId,
       song_id: new mongoose.Types.ObjectId(song_id),
     });
+
     if (existSongInFav)
       throw new ApiError(200, 'song is already added in favorite');
+
     const songId = new mongoose.Types.ObjectId(song_id);
     const songExisted = await Song.findById(songId);
     if (!songExisted) throw new ApiError(400, 'song does not exist or removed');
@@ -58,7 +60,23 @@ const addSongToFavorite = asyncHandler(async (req, res) => {
 });
 
 const deleteSongFromFavorite = asyncHandler(async (req, res) => {
+  const song_id = req.params?.songId;
+  const userId = req.user?._id;
   try {
+    if (!song_id) throw new ApiError(400, 'song id not available');
+    if (!userId) throw new ApiError(401, 'user not logged in');
+
+    const existSongInFav = await Favorite.findOneAndDelete(
+      {
+        user_id: userId,
+        song_id: new mongoose.Types.ObjectId(song_id),
+      },
+      { new: true }
+    );
+
+    if (!existSongInFav)
+      throw new ApiError(404, 'song does not exist or removed already');
+
     return res
       .status(200)
       .json(new ApiResponse(200, 'song deleted from favorite'));

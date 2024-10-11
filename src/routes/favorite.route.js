@@ -8,7 +8,7 @@ import { verifyToken } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 router.route('/').get(verifyToken, getAllFavoriteSongs);
-router.route('/:id').post(verifyToken, addSongToFavorite);
-router.route('/:id').delete(verifyToken, deleteSongFromFavorite);
+router.route('/:songId').post(verifyToken, addSongToFavorite);
+router.route('/:songId').delete(verifyToken, deleteSongFromFavorite);
 
 export default router;

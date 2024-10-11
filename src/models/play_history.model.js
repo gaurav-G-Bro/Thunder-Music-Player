@@ -12,6 +12,7 @@ const play_historySchema = new mongoose.Schema(
     },
     played_at: {
       type: Date,
+      default: Date.now,
     },
   },
   { timestamps: true }

@@ -8,14 +8,17 @@ import {
   addSongsToPlaylist,
   delSongsFromPlaylist,
 } from '../controllers/playlist.controller.js';
+import { verifyToken } from '../middlewares/auth.middleware.js';
 
 const router = Router();
-router.route('/').get(getAllPlaylist);
-router.route('/:id').get(getPlaylistById);
-router.route('/').post(createPlaylist);
-router.route('/:id').patch(updatePlaylist);
-router.route('/:id').delete(deletePlaylist);
-router.route('/:id/songs').post(addSongsToPlaylist);
-router.route('/:id/songs/:songId').delete(delSongsFromPlaylist);
+router.route('/').get(verifyToken, getAllPlaylist);
+router.route('/:playlistId').get(verifyToken, getPlaylistById);
+router.route('/').post(verifyToken, createPlaylist);
+router.route('/:playlistId').patch(verifyToken, updatePlaylist);
+router.route('/:playlistId').delete(verifyToken, deletePlaylist);
+router.route('/:playlistId/add/:songId').patch(verifyToken, addSongsToPlaylist);
+router
+  .route('/:playlistId/remove/:songId')
+  .patch(verifyToken, delSongsFromPlaylist);
 
 export default router;
